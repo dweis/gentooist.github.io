@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AmmoTest</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <style>
+
+    body {
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+#verold3d {
+  width: 100%;
+  height: 100%;
+}
+body, html, canvas {
+  width:100%;
+  height:100%;
+}
+#information {
+  position: absolute;
+  color: white;
+  font-family: tahoma, verdana, sans-serif;
+  top: 0;
+  left: 0;
+  padding: 25px;
+}
+
+  </style>
+</head>
+<body>
+
+    <div id="verold3d"></div>
+
+<div id="information">
+  <p/>Click on the crates.
+</div>
+
+  <script>
+  function startApplication(VAPI) {
+    var $ = window.jQuery;
+
+
+
+var DemoApplication = VAPI.VeroldApp.extend({
+  defaultSceneLoaded: function (scene) {
+    this.threeScene = scene.threeData;
+
+    var that = this;
+    scene.traverse(function(obj) {
+      if (obj.threeData instanceof THREE.Camera) {
+        that.threeCamera = obj.threeData;
+
+        obj.threeData.aspect = $(window).width() / $(window).height();
+        obj.threeData.updateProjectionMatrix();
+      }
+    });
+  },
+
+  update: function(delta) {
+  },
+
+  render: function(delta) {
+    if (this.threeScene && this.threeCamera) {
+      var renderer = this.getRenderer();
+      renderer.render( this.threeScene, this.threeCamera );
+    }
+  }
+});
+
+var app = new DemoApplication({
+  el: '#verold3d',
+  projectId: '52420db756c4870200000054',
+  engineOptions: {
+  }
+});
+
+app.run();
+
+
+  }
+  </script>
+
+    <script src="http://assets.verold.com/verold_api/verold_api_v1.unstable.js"></script>
+
+    <script src="http://assets.verold.com.commondatastorage.googleapis.com/verold_api/lib/ammo.js"></script>
+
+    <script>
+
+      VAPI.addScript("52420e2fa307a6020000004c","OrbitControls",function(e,t){function o(){this.ready=!1}var n=e("underscore"),i=1e-6,s=1800,a=new t.Vector2,r=new t.Vector2,h=new t.Vector2,u=new t.Vector2,d=new t.Vector2,l=new t.Vector2,c=0,m=0,p=1,f=new t.Vector3,v={NONE:-1,ROTATE:0,ZOOM:1,PAN:2},M=v.NONE;return o.prototype={constructor:o,init:function(){this.domElement=this.veroldObject.veroldEngine.renderController.renderer.domElement,this.enabled=this.enabled,this.center=new t.Vector3(this.center.x,this.center.y,this.center.z),this.userZoom=this.userZoom,this.userZoomSpeed=this.userZoomSpeed,this.userRotate=this.userRotate,this.userRotateSpeed=this.userRotateSpeed,this.userPan=this.userPan,this.userPanSpeed=this.userPanSpeed,this.autoRotate=this.autoRotate,this.autoRotateSpeed=this.autoRotateSpeed,this.minPolarAngle=this.minPolarAngle,this.maxPolarAngle=this.maxPolarAngle,this.minDistance=this.minDistance,this.maxDistance=this.maxDistance,this.onMouseDown=n.bind(function(e){this.enabled!==!1&&this.userRotate!==!1&&(e.preventDefault(),0===e.button?(M=v.ROTATE,a.set(e.clientX,e.clientY)):1===e.button?(M=v.ZOOM,u.set(e.clientX,e.clientY)):2===e.button&&(M=v.PAN),document.addEventListener("mousemove",this.onMouseMove,!1),document.addEventListener("mouseup",this.onMouseUp,!1))},this),this.onMouseMove=n.bind(function(e){if(this.enabled!==!1)if(e.preventDefault(),M===v.ROTATE)r.set(e.clientX,e.clientY),h.subVectors(r,a),this.rotateLeft(2*Math.PI*h.x/s*this.userRotateSpeed),this.rotateUp(2*Math.PI*h.y/s*this.userRotateSpeed),a.copy(r);else if(M===v.ZOOM)d.set(e.clientX,e.clientY),l.subVectors(d,u),l.y>0?this.zoomIn():this.zoomOut(),u.copy(d);else if(M===v.PAN){var o=e.movementX||e.mozMovementX||e.webkitMovementX||0,n=e.movementY||e.mozMovementY||e.webkitMovementY||0;this.pan(new t.Vector3(-o,n,0))}},this),this.onMouseUp=n.bind(function(){this.enabled!==!1&&this.userRotate!==!1&&(document.removeEventListener("mousemove",this.onMouseMove,!1),document.removeEventListener("mouseup",this.onMouseUp,!1),M=v.NONE)},this),this.onMouseWheel=n.bind(function(e){if(this.enabled!==!1&&this.userZoom!==!1){var t=0;e.wheelDelta?t=e.wheelDelta:e.detail&&(t=-e.detail),t>0?this.zoomOut():this.zoomIn()}},this),this.domElement.addEventListener("contextmenu",this.preventDefault,!1),this.domElement.addEventListener("mousedown",this.onMouseDown,!1),this.domElement.addEventListener("mousewheel",this.onMouseWheel,!1),this.domElement.addEventListener("DOMMouseScroll",this.onMouseWheel,!1)},objectCreated:function(){this.ready=!0},shutdown:function(){this.domElement.removeEventListener("contextmenu",this.preventDefault,!1),this.domElement.removeEventListener("mousedown",this.onMouseDown,!1),this.domElement.removeEventListener("mousewheel",this.onMouseWheel,!1),this.domElement.removeEventListener("DOMMouseScroll",this.onMouseWheel,!1)},update:function(){if(this.ready){var e=this.veroldObject.threeData.position,t=e.clone().sub(this.center),o=Math.atan2(t.x,t.z),n=Math.atan2(Math.sqrt(t.x*t.x+t.z*t.z),t.y);this.autoRotate&&this.rotateLeft(getAutoRotationAngle()),o+=m,n+=c,n=Math.max(this.minPolarAngle,Math.min(this.maxPolarAngle,n)),n=Math.max(i,Math.min(Math.PI-i,n));var s=t.length()*p;s=Math.max(this.minDistance,Math.min(this.maxDistance,s)),t.x=s*Math.sin(n)*Math.sin(o),t.y=s*Math.cos(n),t.z=s*Math.sin(n)*Math.cos(o),e.copy(this.center).add(t),this.veroldObject.threeData.lookAt(this.center),m=0,c=0,p=1,f.distanceTo(this.veroldObject.threeData.position)>0&&f.copy(this.veroldObject.threeData.position)}},rotateLeft:function(e){void 0===e&&(e=getAutoRotationAngle()),m-=e},rotateRight:function(e){void 0===e&&(e=getAutoRotationAngle()),m+=e},rotateUp:function(e){void 0===e&&(e=getAutoRotationAngle()),c-=e},rotateDown:function(e){void 0===e&&(e=getAutoRotationAngle()),c+=e},zoomIn:function(e){void 0===e&&(e=this.getZoomScale()),p/=e},zoomOut:function(e){void 0===e&&(e=this.getZoomScale()),p*=e},pan:function(e){e.transformDirection(this.veroldObject.threeData.matrix),e.multiplyScalar(this.userPanSpeed),this.veroldObject.threeData.position.add(e),this.center.add(e)},getAutoRotationAngle:function(){return 2*Math.PI/60/60*this.autoRotateSpeed},getZoomScale:function(){return Math.pow(.95,this.userZoomSpeed)},preventDefault:function(e){e.preventDefault()}},o},{maxDistance:{description:"maximum camera distance","default":5,type:"f"},minDistance:{description:"minimum camera distance","default":0,type:"f"},maxPolarAngle:{description:"maximum polar angle","default":3.141592653589793,type:"f"},minPolarAngle:{description:"minimum polar angle","default":0,type:"f"},autoRotateSpeed:{description:"speed of auto rotate","default":2,type:"f"},autoRotate:{description:"enable auto rotate?","default":!1,type:"b"},userPanSpeed:{description:"speed of user pan","default":.2,type:"f"},userPan:{description:"enable user pan?","default":!0,type:"b"},userRotateSpeed:{description:"speed of camera rotate","default":1,type:"f"},userRotate:{description:"enable camera rotate?","default":!0,type:"b"},userZoomSpeed:{description:"speed of camera zoom","default":1,type:"f"},userZoom:{description:"enable user zoom?","default":!0,type:"b"},enabled:{description:"enable camera controls?","default":!0,type:"b"},center:{description:"the focal point for the camera","default":{z:0,y:0,x:0},type:"v3"}});
+
+      VAPI.addScript("52420e5a56c487020000005e","AmmoWorld",function(t){function i(){}var o=t("underscore");return i.prototype={constructor:i,objectCreated:function(){this.collisionConfiguration=new Ammo.btDefaultCollisionConfiguration,this.dispatcher=new Ammo.btCollisionDispatcher(this.collisionConfiguration),this.overlappingPairCache=new Ammo.btDbvtBroadphase,this.solver=new Ammo.btSequentialImpulseConstraintSolver,this.dynamicsWorld=new Ammo.btDiscreteDynamicsWorld(this.dispatcher,this.overlappingPairCache,this.solver,this.collisionConfiguration),this.dynamicsWorld.setGravity(new Ammo.btVector3(this.gravity.x,this.gravity.y,this.gravity.z)),this.veroldObject.getParentAsset().on("load",o.bind(function(){this.events.trigger("ammoworld_ready",this)},this))},shutdown:function(){Ammo.destroy(this.collisionConfiguration),Ammo.destroy(this.dispatcher),Ammo.destroy(this.overlappingPairCache),Ammo.destroy(this.solver)},update:function(t){this.dynamicsWorld&&this.dynamicsWorld.stepSimulation(t,10)}},i},{gravity:{type:"v3",description:"The DynamicsWorld gravity setting","default":{x:0,y:-9.82,z:0}}});
+
+      VAPI.addScript("52420e5a56c487020000005f","AmmoBoxBody",function(){function t(){this.ammoWorldComponent=null,this.body=null}var e=new Ammo.btTransform;return t.prototype={constructor:t,init:function(){this.events.on("ammoworld_ready",this.ammoWorldReady,this)},shutdown:function(){this.events.off("ammoworld_ready",this.ammoWorldReady,this)},update:function(){this.body&&(this.body.getMotionState().getWorldTransform(e),this.veroldObject.threeData.position.x=e.getOrigin().x(),this.veroldObject.threeData.position.y=e.getOrigin().y(),this.veroldObject.threeData.position.z=e.getOrigin().z(),this.veroldObject.threeData.quaternion.x=e.getRotation().x(),this.veroldObject.threeData.quaternion.y=e.getRotation().y(),this.veroldObject.threeData.quaternion.z=e.getRotation().z(),this.veroldObject.threeData.quaternion.w=e.getRotation().w())},ammoWorldReady:function(t){this.ammoWorldComponent||(this.ammoWorldComponent=t,this.createCollider())},createCollider:function(){var t=new Ammo.btBoxShape(new Ammo.btVector3(this.halfExtents.x,this.halfExtents.y,this.halfExtents.z)),e=new Ammo.btTransform;e.setIdentity();var o=0!=this.mass,i=new Ammo.btVector3(0,0,0);o&&t.calculateLocalInertia(this.mass,i),e.setOrigin(new Ammo.btVector3(this.veroldObject.threeData.position.x,this.veroldObject.threeData.position.y,this.veroldObject.threeData.position.z)),e.setRotation(new Ammo.btQuaternion(this.veroldObject.threeData.quaternion.x,this.veroldObject.threeData.quaternion.y,this.veroldObject.threeData.quaternion.z,this.veroldObject.threeData.quaternion.w));var a=new Ammo.btDefaultMotionState(e),n=new Ammo.btRigidBodyConstructionInfo(this.mass,a,t,i),r=new Ammo.btRigidBody(n);this.ammoWorldComponent.dynamicsWorld.addRigidBody(r),this.body=r}},t},{mass:{type:"f","default":1,description:"The mass of the object, a mass of 0 will create a static body"},halfExtents:{type:"v3","default":{x:.5,y:.5,z:.5},description:"Half of the length, width and height of the object"}});
+
+      VAPI.addScript("52420e5a56c4870200000061","Picker",function(e,t){function r(){}return r.prototype={constructor:r,objectCreated:function(){return this.veroldObject.threeData instanceof t.Camera?(this.inputHandler=this.veroldObject.veroldEngine.Input,this.geometryPicker=this.veroldObject.veroldEngine.veroldApp.getPicker(),this.renderer=this.veroldObject.veroldEngine.getRenderer(),this.veroldObject.veroldEngine.on("mouseUp",this.mouseUp,this),void 0):console.error("Picker must be attached to a camera object")},shutdown:function(){this.veroldObject.veroldEngine.off("mouseUp",this.mouseUp,this)},mouseUp:function(e){if(e.button===this.inputHandler.mouseButtons.left&&!this.inputHandler.mouseDragStatePrevious[e.button]){var t=e.sceneX/this.getWidth(),r=e.sceneY/this.getHeight(),i=this.geometryPicker.pick(this.veroldObject.getParentAsset().threeData,this.veroldObject.threeData,t,r);i&&(this.events.trigger("pick:"+i.modelID),this.events.trigger("pick:"+i.meshID))}},getWidth:function(){return this.veroldObject.veroldEngine.renderController.getWidth()},getHeight:function(){return this.veroldObject.veroldEngine.renderController.getHeight()}},r},{});
+
+      VAPI.addScript("52420e5a56c4870200000060","ClickCrate",function(o){function t(){}return o("underscore"),t.prototype={constructor:t,init:function(){this.events.on("pick:"+this.veroldObject.id,this.picked,this)},objectCreated:function(){this.ammoBoxBodyComponent=this.veroldObject.getComponentsByScriptName("AmmoBoxBody")[0]},shutdown:function(){this.events.off("pick:"+this.veroldObject.id,this.picked,this)},picked:function(){this.ammoBoxBodyComponent&&this.ammoBoxBodyComponent.body&&(this.ammoBoxBodyComponent.body.activate(!0),this.ammoBoxBodyComponent.body.applyCentralImpulse(new Ammo.btVector3(2*Math.random()-1,4*Math.random()+3,2*Math.random()-1)))}},t},{});
+
+      VAPI.addScript("52432dd825cce402000001aa","New Script",function(){function t(){}return t.prototype={constructor:t,create:function(){},update:function(){}},t},{"My Model":{description:"",filter:{model:!0},type:"object"}});
+
+      VAPI.addScript("52432e6778d69b02000001a4","Rotate",function(t,e){function a(){}var n=new e.Vector3,i=new e.Euler;return a.prototype={constructor:a,objectCreated:function(){this.delta=new e.Vector3(this.delta.x,this.delta.y,this.delta.z),this.angle=this.delta.clone(),this.angle.applyQuaternion(this.veroldObject.threeData.quaternion)},update:function(t){this.veroldObject.threeData&&(n.copy(this.delta).multiplyScalar(t),this.angle.add(n),i.set(this.angle.x,this.angle.y,this.angle.z),this.veroldObject.threeData.quaternion.setFromEuler(i))}},a},{delta:{description:"the angle delta per second in radians","default":{z:-.1,y:1,x:.5},type:"v3"}});
+
+    startApplication(window.VAPI);
+    </script>
+
+  </script>
+</body>
+</html>
